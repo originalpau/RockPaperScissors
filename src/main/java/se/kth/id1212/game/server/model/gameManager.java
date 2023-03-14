@@ -15,7 +15,10 @@ public class gameManager {
     static int rounds = 0;
     static Player activePlayer;
 
-    public gameManager(Player activePlayer) {
+    public gameManager() {
+    }
+
+    public void registerActivePlayer(Player activePlayer) {
         gameManager.activePlayer = activePlayer;
     }
 
@@ -58,6 +61,22 @@ public class gameManager {
         String inputs = userInput + "[" + activePlayer.getName() + "] vs " + robotInput + "[robot] -> " + result + "\n";
         String stats = "ROUND " + rounds + "\n" + activePlayer.getName() + ": " + point1 + " points\nRobot: " + point2 + " points\n";
         activePlayer.send(inputs + stats);
+    }
+
+    public static int getPoint1() {
+        return point1;
+    }
+
+    public static int getPoint2() {
+        return point2;
+    }
+
+    public static int getRounds() {
+        return rounds;
+    }
+
+    public static Player getActivePlayer() {
+        return activePlayer;
     }
 
     private enum GameSigns {

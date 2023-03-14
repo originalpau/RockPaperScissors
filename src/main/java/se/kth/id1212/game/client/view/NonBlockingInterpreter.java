@@ -67,7 +67,7 @@ public class NonBlockingInterpreter implements Runnable {
                     case LOGIN:
                         if (clientName != null) {
                             outMgr.println("You are logged in as [" + clientName + "]");
-                        } else if (cmdLine.getParameter(0).equals("")) {
+                        } else if (cmdLine.getParameter(0) == null) {
                             clientName = "guest";
                             game.login(myRemoteObj, clientName);
                         } else {
@@ -89,7 +89,7 @@ public class NonBlockingInterpreter implements Runnable {
                     case PLAY:
                         if (clientName != null) {
                             game.startRobotGame(clientName, myRemoteObj);
-                            play();
+                            play(clientName);
                         } else {
                             outMgr.println("Not logged in");
                         }
@@ -111,13 +111,13 @@ public class NonBlockingInterpreter implements Runnable {
         }
     }
 
-    private void play() throws RemoteException {
+    private void play(String clientName) throws RemoteException {
         String input = console.nextLine();
         while(!input.equals("quit")) {
             game.userInput(input);
             input = console.nextLine();
         }
-        game.endGame();
+        game.endGame(clientName);
     }
 
     private String readNextLine() {

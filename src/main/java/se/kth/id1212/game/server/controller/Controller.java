@@ -16,12 +16,14 @@ import java.util.Map;
 
 public class Controller extends UnicastRemoteObject implements Game {
     private final GameDAO gameDb;
+    private final gameManager gameManager;
     private final Map<String, Client> onlinePlayers = Collections.synchronizedMap(new HashMap<>());
 
 
     public Controller() throws RemoteException {
         super();
         gameDb = new GameDAO();
+        gameManager = new gameManager();
     }
 
     @Override
@@ -55,7 +57,7 @@ public class Controller extends UnicastRemoteObject implements Game {
         //fetch player and save its name/remoteNode in model.
         Player activePlayer = new Player(remoteObj, name);
         //send player to gameManager and start game.
-        gameManager gameManager = new gameManager(activePlayer);
+        gameManager.registerActivePlayer(activePlayer);
         gameManager.play();
     }
 
@@ -64,9 +66,15 @@ public class Controller extends UnicastRemoteObject implements Game {
     }
 
     @Override
-    public void endGame() throws RemoteException {
+    public void endGame(String clientName) throws RemoteException {
         //register in database;
-        //updatePlayerStatus
+        if (clientName.equals(gameManager.getActivePlayer().getName())) {
+            int gameId = gameDb.saveGame(gameManager.getRounds());
+            gameDb.updatePlayerGame(clientName, gameId, gameManager.getPoint1());
+            gameDb.updatePlayerGame("robot", gameId, gameManager.getPoint2());
+            //updatePlayerStatus to true
+            gameDb.updateStatus(clientName, true);
+        }
     }
 
 }

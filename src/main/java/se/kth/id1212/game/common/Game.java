@@ -14,5 +14,5 @@ public interface Game extends Remote {
     public void startRobotGame(String name, Client remoteObj) throws RemoteException;
 
     public void userInput(String input) throws RemoteException;
-    public void endGame() throws RemoteException;
+    public void endGame(String clientName) throws RemoteException;
 }
