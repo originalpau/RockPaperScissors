@@ -67,6 +67,9 @@ public class NonBlockingInterpreter implements Runnable {
                     case LOGIN:
                         if (clientName != null) {
                             outMgr.println("You are logged in as [" + clientName + "]");
+                        } else if (cmdLine.getParameter(0).equals("")) {
+                            clientName = "guest";
+                            game.login(myRemoteObj, clientName);
                         } else {
                             clientName = cmdLine.getParameter(0);
                             game.login(myRemoteObj, clientName);
