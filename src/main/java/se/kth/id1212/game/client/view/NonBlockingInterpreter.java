@@ -2,6 +2,7 @@ package se.kth.id1212.game.client.view;
 
 import se.kth.id1212.game.common.Client;
 import se.kth.id1212.game.common.Game;
+import se.kth.id1212.game.common.GameDTO;
 import se.kth.id1212.game.common.PlayerDTO;
 
 import java.rmi.RemoteException;
@@ -100,6 +101,16 @@ public class NonBlockingInterpreter implements Runnable {
                             game.start(clientName, cmdLine.getParameter(0));
                         }
                          */
+                        break;
+                    case HISTORY:
+                        if (clientName != null) {
+                            List<? extends GameDTO> gameHistory = game.history(clientName);
+                            for (GameDTO game : gameHistory) {
+                                outMgr.println(game.toString());
+                            }
+                        } else {
+                            outMgr.println("Not logged in");
+                        }
                         break;
                     default:
                         outMgr.println("illegal command");

@@ -15,4 +15,6 @@ public interface Game extends Remote {
 
     public void userInput(String input) throws RemoteException;
     public void endGame(String clientName) throws RemoteException;
+
+    public List<? extends GameDTO> history(String clientName) throws RemoteException;
 }

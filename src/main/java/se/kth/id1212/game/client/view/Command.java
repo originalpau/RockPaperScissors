@@ -5,7 +5,8 @@ public enum Command {
     LOGIN,
     PLAY,
     ONLINE,
+    HISTORY,
     HELP,
     EXIT,
-    ILLEGAL_COMMAND
+    ILLEGAL_COMMAND;
 }

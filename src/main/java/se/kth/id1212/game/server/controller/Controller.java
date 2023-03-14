@@ -2,6 +2,7 @@ package se.kth.id1212.game.server.controller;
 
 import se.kth.id1212.game.common.Client;
 import se.kth.id1212.game.common.Game;
+import se.kth.id1212.game.common.GameDTO;
 import se.kth.id1212.game.common.PlayerDTO;
 import se.kth.id1212.game.server.integration.GameDAO;
 import se.kth.id1212.game.server.model.Player;
@@ -75,6 +76,11 @@ public class Controller extends UnicastRemoteObject implements Game {
             //updatePlayerStatus to true
             gameDb.updateStatus(clientName, true);
         }
+    }
+
+    @Override
+    public List<? extends GameDTO> history(String clientName) throws RemoteException {
+        return gameDb.findHistory(clientName);
     }
 
 }

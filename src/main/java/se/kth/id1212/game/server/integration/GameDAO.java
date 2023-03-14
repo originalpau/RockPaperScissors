@@ -1,6 +1,8 @@
 package se.kth.id1212.game.server.integration;
 
 
+import com.mysql.cj.x.protobuf.MysqlxPrepare;
+import se.kth.id1212.game.server.model.GameHistory;
 import se.kth.id1212.game.server.model.Player;
 
 import java.sql.Connection;
@@ -17,6 +19,7 @@ public class GameDAO {
     private PreparedStatement insertScore;
     private PreparedStatement findOnlinePlayers;
     private PreparedStatement updatePlayerStatus;
+    private PreparedStatement findPlayerHistory;
 
     public GameDAO() {
         try {
@@ -105,6 +108,25 @@ public class GameDAO {
         }
     }
 
+    public List<GameHistory> findHistory(String clientName) {
+        List<GameHistory> gameHistory = new ArrayList<>();
+        try {
+            findPlayerHistory.setString(1, clientName);
+            ResultSet rs = findPlayerHistory.executeQuery();
+            while (rs.next()) {
+                gameHistory.add(new GameHistory(rs.getString("game_id"),
+                        rs.getTimestamp("time"),
+                        rs.getInt("round"),
+                        rs.getString("name"),
+                        rs.getInt("score")));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return gameHistory;
+
+    }
+
     private void connectToGameDB() throws SQLException {
         connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/game", "postgres", "postgres");
     }
@@ -115,6 +137,11 @@ public class GameDAO {
         insertScore = connection.prepareStatement("insert into player_game(player_id, game_id, score) values (?, ?, ?)");
         findOnlinePlayers = connection.prepareStatement("select * from player where status = true");
         updatePlayerStatus = connection.prepareStatement("UPDATE player SET status = ? where name = ?");
+        findPlayerHistory = connection.prepareStatement("select game_id, time, round, name, score from player_game " +
+                "inner join game on game.id = game_id " +
+                "inner join player on player.id = player_id " +
+                "where player.name = ? " +
+                "order by player_game.score DESC;");
     }
 
 
