@@ -27,6 +27,14 @@ public class Controller extends UnicastRemoteObject implements Game {
         gameManager = new gameManager();
     }
 
+    public synchronized void cancelGame() throws RemoteException {
+        gameManager.cancelGame();
+
+    }
+
+
+
+
     @Override
     public void login(Client remoteNode, String name) throws RemoteException {
         //save a Player

@@ -1,6 +1,10 @@
 package se.kth.id1212.game.server.model;
 
+import se.kth.id1212.game.client.view.Command;
+
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
+
 
 /**
  * Keeps track of players in an active game, and is also responsible for sending
@@ -16,6 +20,16 @@ public class gameManager {
     static Player activePlayer;
 
     public gameManager() {
+    }
+
+    public void cancelGame(){
+
+        activePlayer.send("the admin canceled this game, you will be back to the menu!");
+        for (Command command : Command.values()) {
+           activePlayer.send(command.toString().toLowerCase());
+        }
+
+
     }
 
     public void registerActivePlayer(Player activePlayer) {
@@ -88,6 +102,11 @@ public class gameManager {
             Random random = new Random();
             return values()[random.nextInt(values().length)];
         }
+
+
+
+
+
 
         public static boolean contains(String input) {
             for (GameSigns c : GameSigns.values()) {

@@ -35,6 +35,7 @@ public class NonBlockingInterpreter implements Runnable {
      *
      */
     public void start(Game game) {
+        System.out.println("Welcome! type help to see options. Here is what each option does: \n whoami: shows who is logged in \n login: type login followed by your name \n play: start playing. \n online: shows online players. \n history: shows history of games \n help: use help to see the menu \n exit: use this to leave the game \n Good Luck!") ;
         this.game = game;
         if (receivingCmds) {
             return;

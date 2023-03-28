@@ -36,8 +36,11 @@ public class GameDAO {
             updatePlayerStatus.setBoolean(1,status);
             updatePlayerStatus.setString(2,name);
             updatedRows = updatePlayerStatus.executeUpdate();
-            if (updatedRows != 1) {
+            if (updatedRows == -1) {
                 System.out.println("Couldn't update player status.");
+            }
+            else {
+                System.out.println(name+","+status);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -50,7 +53,7 @@ public class GameDAO {
         try {
             updatedRows = updateStatus(playerName, true);
             if (updatedRows != 1) {
-                PreparedStatement insertPlayer = connection.prepareStatement("INSERT INTO player (name, status) VALUES (?, true)");
+                PreparedStatement insertPlayer = connection.prepareStatement("INSERT INTO Player (name, status) VALUES (?, true)");
                 insertPlayer.setString(1, playerName);
                 insertPlayer.executeUpdate();
             }
