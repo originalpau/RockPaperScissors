@@ -5,11 +5,7 @@ import com.mysql.cj.x.protobuf.MysqlxPrepare;
 import se.kth.id1212.game.server.model.GameHistory;
 import se.kth.id1212.game.server.model.Player;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +17,8 @@ public class GameDAO {
     private PreparedStatement updatePlayerStatus;
     private PreparedStatement findPlayerHistory;
 
+    private static PreparedStatement getAllInfo;
+
     public GameDAO() {
         try {
             connectToGameDB();
@@ -29,6 +27,22 @@ public class GameDAO {
             e.printStackTrace();
         }
     }
+
+    public static void getAllInfo() {
+        try (ResultSet rs = getAllInfo.executeQuery()) {
+            while (rs.next()) {
+                String name = rs.getString("player_name");
+                Timestamp time = rs.getTimestamp("game_time");
+                int round = rs.getInt("round");
+                int score = rs.getInt("score");
+                int gameId = rs.getInt("game_id");
+                System.out.println("Name: " + name + ", Time: " + time + ", Round: " + round + ", Score: " + score + ", Game ID: " + gameId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public int updateStatus(String name, boolean status) {
         int updatedRows = -1;
@@ -39,9 +53,10 @@ public class GameDAO {
             if (updatedRows == -1) {
                 System.out.println("Couldn't update player status.");
             }
-            else {
-                System.out.println(name+","+status);
+            else{
+                System.out.println(name +"," + status);
             }
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -52,8 +67,9 @@ public class GameDAO {
         int updatedRows = -1;
         try {
             updatedRows = updateStatus(playerName, true);
+
             if (updatedRows != 1) {
-                PreparedStatement insertPlayer = connection.prepareStatement("INSERT INTO Player (name, status) VALUES (?, true)");
+                PreparedStatement insertPlayer = connection.prepareStatement("INSERT INTO Player (name, status) VALUES (?, false)");
                 insertPlayer.setString(1, playerName);
                 insertPlayer.executeUpdate();
             }
@@ -61,6 +77,12 @@ public class GameDAO {
             e.printStackTrace();
         }
     }
+
+
+
+
+
+
 
     public List<Player> findAllOnlinePlayers() {
         List<Player> players = new ArrayList<>();
@@ -145,6 +167,14 @@ public class GameDAO {
                 "inner join player on player.id = player_id " +
                 "where player.name = ? " +
                 "order by player_game.score DESC;");
+        getAllInfo = connection.prepareStatement("SELECT game.id AS game_id, game.time AS game_time, game.round AS round, player.name AS player_name, player_game.score AS score FROM player_game "+
+                "INNER JOIN game ON game.id = player_game.game_id "+
+                "INNER JOIN player ON player.id = player_game.player_id "+
+                "ORDER by game.id ASC, player_game.score DESC ");
+
+
+
+
     }
 
 

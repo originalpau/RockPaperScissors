@@ -5,6 +5,7 @@ import se.kth.id1212.game.common.Game;
 import se.kth.id1212.game.common.GameDTO;
 import se.kth.id1212.game.common.PlayerDTO;
 
+import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
@@ -77,6 +78,8 @@ public class NonBlockingInterpreter implements Runnable {
                             game.login(myRemoteObj, clientName);
                         }
                         break;
+
+
                     case EXIT:
                         receivingCmds = false;
                         if (clientName != null) game.exit(clientName);
@@ -135,6 +138,19 @@ public class NonBlockingInterpreter implements Runnable {
     private String readNextLine() {
         outMgr.print(PROMPT);
         return console.nextLine();
+    }
+
+    public void executeCommand(Command command) throws RemoteException {
+        String clientName = null;
+
+
+        switch (command) {
+            case EXIT:
+                receivingCmds = false;
+                if (clientName != null) game.exit(clientName);
+                UnicastRemoteObject.unexportObject(myRemoteObj, false);
+                break;
+        }
     }
 
     private class ConsoleOutput extends UnicastRemoteObject implements Client {

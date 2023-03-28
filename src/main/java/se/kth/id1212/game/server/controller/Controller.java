@@ -27,10 +27,7 @@ public class Controller extends UnicastRemoteObject implements Game {
         gameManager = new gameManager();
     }
 
-    public synchronized void cancelGame() throws RemoteException {
-        gameManager.cancelGame();
 
-    }
 
 
 
@@ -91,4 +88,9 @@ public class Controller extends UnicastRemoteObject implements Game {
         return gameDb.findHistory(clientName);
     }
 
+
+    public synchronized void cancelGame() throws RemoteException {
+        gameManager.cancelGame();
+
+    }
 }

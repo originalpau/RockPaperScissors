@@ -1,9 +1,18 @@
 package se.kth.id1212.game.server.model;
 
 import se.kth.id1212.game.client.view.Command;
+import se.kth.id1212.game.client.view.NonBlockingInterpreter;
+import se.kth.id1212.game.common.Game;
 
+
+
+
+
+import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
+
+
 
 
 /**
@@ -11,6 +20,7 @@ import java.util.Random;
  * messages to players.
  */
 public class gameManager {
+
     private final static String WELCOME_MESSAGE = "Welcome to this game - Rock Paper Scissors!\n";
     private final static String RULES = "\nRules:\n - Rock beats Scissors\n - Scissors beats Paper\n - Paper beats Rock\n";
     private final static String OPTIONS = "\nChoose an option to play: [rock, paper, scissors] or [quit]\n";
@@ -18,19 +28,22 @@ public class gameManager {
     static int point2 = 0;
     static int rounds = 0;
     static Player activePlayer;
+    private Game Controller;
 
     public gameManager() {
     }
 
-    public void cancelGame(){
+    public void cancelGame() throws RemoteException {
+        activePlayer.send("The admin canceled this game. You will be back to the menu.");
+        String clientName = activePlayer.getName();
 
-        activePlayer.send("the admin canceled this game, you will be back to the menu!");
         for (Command command : Command.values()) {
-           activePlayer.send(command.toString().toLowerCase());
+            activePlayer.send(command.toString().toLowerCase());
         }
-
-
     }
+
+
+
 
     public void registerActivePlayer(Player activePlayer) {
         gameManager.activePlayer = activePlayer;
@@ -38,6 +51,7 @@ public class gameManager {
 
     public void play() {
         activePlayer.send(WELCOME_MESSAGE + RULES + OPTIONS);
+
     }
 
     public static void recvUserInput(String userInput) {
