@@ -89,8 +89,8 @@ public class Controller extends UnicastRemoteObject implements Game {
     }
 
 
-    public synchronized void cancelGame() throws RemoteException {
+    /*public synchronized void cancelGame() throws RemoteException {
         gameManager.cancelGame();
 
-    }
+    }*/
 }

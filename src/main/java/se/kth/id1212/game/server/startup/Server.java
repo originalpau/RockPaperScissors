@@ -5,12 +5,15 @@ import se.kth.id1212.game.server.controller.Controller;
 import se.kth.id1212.game.server.integration.GameDAO;
 
 
+
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class Server {
@@ -21,14 +24,14 @@ public class Server {
             Server server = new Server();
             server.startRMIServant();
 
-        } catch (RemoteException | MalformedURLException  e) {
+        } catch (RemoteException | MalformedURLException | SQLException e) {
             System.out.println("Failed to start game server.");
         }
     }
 
 
 
-    private void startRMIServant() throws RemoteException, MalformedURLException {
+    private void startRMIServant() throws RemoteException, MalformedURLException, SQLException {
         try {
             LocateRegistry.getRegistry().list();
         } catch (RemoteException noRegistryRunning) {
@@ -40,27 +43,55 @@ public class Server {
 
         System.out.println("Game server started.");
 
+        System.out.println("As an admin you have some options:\n info: getting all the information regarding games and " +
+                "players stored in database\n delete players: removing all the rows in players table.\n " +
+                "delete history: removing rows in player_game table\n if you don't get any responses, the tables are " +
+                "either empty or your command is illegal!");
+
         // Read input from the terminal and check for cancel command
         Scanner scanner = new Scanner(System.in);
         while (true) {
+
+
             String input = scanner.nextLine();
 
-            if(input.equals("info")){
-                GameDAO.getAllInfo();
 
 
-            if (input.equals("cancel")) {
+            if (input.equals("info")) {
+
                 try {
-                    contr.cancelGame();
-                    System.out.println("Game canceled.");
-                } catch (RemoteException e) {
-                    System.out.println("Failed to cancel game.");
-                }
+                    GameDAO.getAllInfo();
+                } catch (Exception e) {
+                    System.out.println("could not show info");
+                }}
+                if (input.equals("delete players")) {
+
+                    try {
+
+
+                        GameDAO.deletePlayers();
+                    } catch (Exception e) {
+                        System.out.println("could not perform deletion");
+                    }
 
 
                 }
+            if (input.equals("delete history")) {
+
+                try {
+
+
+                    GameDAO.deleteHistory();
+                } catch (Exception e) {
+                    System.out.println("could not perform deletion");
+                }
+
+
+            }
+
+
             }
         }
     }
 
-}
+

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameDAO {
-    private Connection connection;
+    private static Connection connection;
     private PreparedStatement createGame;
     private PreparedStatement insertScore;
     private PreparedStatement findOnlinePlayers;
@@ -154,6 +154,26 @@ public class GameDAO {
 
     private void connectToGameDB() throws SQLException {
         connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/game", "postgres", "postgres");
+    }
+
+
+    public static void deletePlayers() throws SQLException {
+        String query = "DELETE FROM player WHERE 1=1;";
+
+
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.executeUpdate();
+        System.out.println("player rows deleted");
+    }
+
+
+    public static void deleteHistory() throws SQLException {
+        String query = "DELETE FROM player_game WHERE 1=1;";
+
+
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.executeUpdate();
+        System.out.println("player_game rows deleted");
     }
 
     private void prepareStatements() throws SQLException {

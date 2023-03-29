@@ -33,14 +33,14 @@ public class gameManager {
     public gameManager() {
     }
 
-    public void cancelGame() throws RemoteException {
+    /*public void cancelGame() throws RemoteException {
         activePlayer.send("The admin canceled this game. You will be back to the menu.");
         String clientName = activePlayer.getName();
 
         for (Command command : Command.values()) {
             activePlayer.send(command.toString().toLowerCase());
         }
-    }
+    }*/
 
 
 
